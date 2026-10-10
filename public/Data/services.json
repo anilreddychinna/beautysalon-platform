@@ -1,0 +1,200 @@
+[
+  {
+    "id": "s-haircut",
+    "name": "Hair Cut",
+    "category": "hair",
+    "price": 150,
+    "minutes": 20,
+    "active": true,
+    "color": "black"
+  },
+  {
+    "id": "s-haircut-beard",
+    "name": "Hair Cut + Beard",
+    "category": "hair",
+    "price": 250,
+    "minutes": 30,
+    "active": true,
+    "color": "orange"
+  },
+  {
+    "id": "s-color",
+    "name": "Hair Color",
+    "category": "hair",
+    "price": 200,
+    "minutes": 45,
+    "active": true,
+    "color": "green"
+  },
+  {
+    "id": "s-detan",
+    "name": "Detan",
+    "category": "skin",
+    "price": 800,
+    "minutes": 30,
+    "active": true,
+    "color": "red"
+  },
+  {
+    "id": "s-gold-facial",
+    "name": "Gold Facial",
+    "category": "skin",
+    "price": 500,
+    "minutes": 40,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-hair-wash",
+    "name": "Hair Wash",
+    "category": "hair",
+    "price": 1500,
+    "minutes": 20,
+    "active": true,
+    "color": "green"
+  },
+  {
+    "id": "s-men-699",
+    "name": "Men: Advance Haircut, Shave, Loreal Wash, De-Tan",
+    "category": "special",
+    "price": 699,
+    "minutes": 60,
+    "active": true,
+    "color": "black"
+  },
+  {
+    "id": "s-men-999",
+    "name": "Men: Hair Cut, Wash, Shave, Normal Facial",
+    "category": "special",
+    "price": 999,
+    "minutes": 75,
+    "active": true,
+    "color": "orange"
+  },
+  {
+    "id": "s-men-1599",
+    "name": "Men: Hair Cut, Shave, Ammonia Free Colour, Facial",
+    "category": "special",
+    "price": 1599,
+    "minutes": 90,
+    "active": true,
+    "color": "green"
+  },
+  {
+    "id": "s-men-2499",
+    "name": "Men: Hair Cut, Shave, Gold Facial, Hairspa, Pedicure",
+    "category": "special",
+    "price": 2499,
+    "minutes": 120,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-wax-499",
+    "name": "Waxing: Half Legs, Full Arms, Under Arms, Threading",
+    "category": "special",
+    "price": 499,
+    "minutes": 45,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-rica-749",
+    "name": "Rica Wax: Half Legs, Full Arms, Under Arms",
+    "category": "special",
+    "price": 749,
+    "minutes": 45,
+    "active": true,
+    "color": "red"
+  },
+  {
+    "id": "s-fruit-facial",
+    "name": "Fruit Facial",
+    "category": "special",
+    "price": 799,
+    "minutes": 40,
+    "active": true,
+    "color": "orange"
+  },
+  {
+    "id": "s-papaya-facial",
+    "name": "Papaya Facial",
+    "category": "special",
+    "price": 799,
+    "minutes": 40,
+    "active": true,
+    "color": "orange"
+  },
+  {
+    "id": "s-wine-facial",
+    "name": "Wine Facial",
+    "category": "special",
+    "price": 799,
+    "minutes": 40,
+    "active": true,
+    "color": "red"
+  },
+  {
+    "id": "s-whitening-facial",
+    "name": "Whitening Facial",
+    "category": "special",
+    "price": 799,
+    "minutes": 40,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-sp-gold-facial",
+    "name": "Gold Facial",
+    "category": "special",
+    "price": 1199,
+    "minutes": 50,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-pearl-facial",
+    "name": "Pearl Facial",
+    "category": "special",
+    "price": 1199,
+    "minutes": 50,
+    "active": true,
+    "color": "pink"
+  },
+  {
+    "id": "s-silver-facial",
+    "name": "Silver Facial",
+    "category": "special",
+    "price": 1199,
+    "minutes": 50,
+    "active": true,
+    "color": "black"
+  },
+  {
+    "id": "s-tan-clear",
+    "name": "Tan Clear Facial",
+    "category": "special",
+    "price": 1199,
+    "minutes": 50,
+    "active": true,
+    "color": "green"
+  },
+  {
+    "id": "s-adv-haircut",
+    "name": "Any Advanced Hair Cut",
+    "category": "special",
+    "price": 699,
+    "minutes": 40,
+    "active": true,
+    "color": "black"
+  },
+  {
+    "id": "s-women-999",
+    "name": "Women: Pedicure, Manicure, Facial, Threading",
+    "category": "special",
+    "price": 999,
+    "minutes": 90,
+    "active": true,
+    "color": "pink"
+  }
+]

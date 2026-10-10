@@ -1,0 +1,159 @@
+<section class="page customers-page">
+  <header class="page-head">
+    <div>
+      <h1>Customers</h1>
+      <p>Search the list, then open a customer to see details and orders.</p>
+    </div>
+    <button type="button" class="btn primary" (click)="beginAdd()">Add customer</button>
+  </header>
+
+  @if (error() && !formOpen()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+
+  @if (formOpen()) {
+    <div class="overlay" (click)="cancel()">
+      <div class="panel overlay-card customer-dialog" [class.success-card]="saved()" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        @if (saved()) {
+          <div class="success-mark" aria-hidden="true">
+            <svg viewBox="0 0 72 72">
+              <circle class="success-ring" cx="36" cy="36" r="32" />
+              <path class="success-check" d="M20 38 l10 10 22-24" />
+            </svg>
+          </div>
+          <h2>{{ notice() }}</h2>
+        } @else {
+      <h2>{{ editingId() ? 'Edit customer' : 'Add customer' }}</h2>
+      @if (error()) {
+        <div class="banner bad" role="alert">{{ error() }}</div>
+      }
+      <form class="stack-form" (submit)="$event.preventDefault(); save()">
+        <div class="name-gender">
+          <label class="field">
+            <span>Name</span>
+            <input [value]="name()" (input)="onName($event)" maxlength="20" />
+          </label>
+          <div class="gender-picks" role="group" aria-label="Gender">
+            <button type="button" class="gender-icon female" [class.on]="gender() === 'Female'" (click)="setGender('Female')">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M7.2 21.5 12 9.2l4.8 12.3z"/></svg>
+              Female
+            </button>
+            <button type="button" class="gender-icon male" [class.on]="gender() === 'Male'" (click)="setGender('Male')">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M8 9.2h8v4.2h-1.7V21h-2V15.8h-.6V21H9.7v-7.6H8z"/></svg>
+              Male
+            </button>
+          </div>
+        </div>
+        <label class="field">
+          <span>Phone</span>
+          <input
+            [value]="phone()"
+            (input)="onPhone($event)"
+            placeholder="Indian mobile number"
+            inputmode="numeric"
+            maxlength="10"
+          />
+        </label>
+        @if (editingId()) {
+          <label class="field">
+            <span>Customer ID</span>
+            <input [value]="customerId()" readonly />
+          </label>
+        } @else {
+          <p class="hint">Customer ID is created automatically when you save.</p>
+        }
+        <label class="field">
+          <span>Notes</span>
+          <textarea rows="2" [value]="notes()" (input)="onText(notes, $event)"></textarea>
+        </label>
+        @if (!editingId() && gender() !== 'Female' && gender() !== 'Male') {
+          <p class="gender-error">Please select gender.</p>
+        }
+        <div class="form-actions">
+          <button type="submit" class="btn primary" [disabled]="saving() || (!editingId() && gender() !== 'Female' && gender() !== 'Male')">{{ saving() ? 'Saving…' : 'Save customer' }}</button>
+          <button type="button" class="btn ghost" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+        }
+      </div>
+    </div>
+  }
+
+  <section class="customer-stats" aria-label="Customer totals">
+    <div class="stat-card customers">
+      <span>Total customers</span>
+      <strong>{{ rows().length }}</strong>
+    </div>
+    <div class="stat-card orders">
+      <span>Total orders</span>
+      <strong>{{ orderCount() }}</strong>
+    </div>
+  </section>
+
+  <section class="panel customer-search">
+    <label class="field">
+      <span>Search by name or phone</span>
+      <input [value]="query()" (input)="onQuery($event)" placeholder="Name or phone" />
+    </label>
+  </section>
+
+  <section class="panel customers-list">
+    @if (loading()) {
+      <p class="empty">Loading customers…</p>
+    } @else if (rows().length === 0) {
+      <p class="empty">No customers yet. Add a name and phone to start a record.</p>
+    } @else if (visible().length === 0) {
+      <p class="empty">No customers match that name or phone.</p>
+    } @else {
+      <div class="table-wrap customer-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Customer ID</th>
+              <th>Phone</th>
+              <th>Gender</th>
+              <th>Notes</th>
+              <th>Visits</th>
+              <th>Spent</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of paged(); track row.id) {
+              <tr class="customer-link" (click)="view(row)">
+                <td><strong>{{ row.name }}</strong></td>
+                <td class="customer-id">{{ row.customerId || row.id }}</td>
+                <td>{{ row.phone }}</td>
+                <td>
+                  @if (row.gender === 'Female') {
+                    <span class="gender-tag female">Female</span>
+                  } @else if (row.gender === 'Male') {
+                    <span class="gender-tag male">Male</span>
+                  } @else {
+                    —
+                  }
+                </td>
+                <td>{{ row.notes || '—' }}</td>
+                <td>{{ row.visits }}</td>
+                <td>{{ row.spent | inr }}</td>
+                <td class="row-actions">
+                  <button type="button" class="btn ghost icon-btn" (click)="$event.stopPropagation(); view(row)" aria-label="View customer" title="View customer">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button type="button" class="btn ghost" (click)="$event.stopPropagation(); edit(row)">Edit</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <span>Showing {{ pageStart() }}–{{ pageEnd() }} of {{ visible().length }}</span>
+        <button type="button" class="btn ghost" [disabled]="page() === 1" (click)="go(page() - 1)">Previous</button>
+        <span>Page {{ page() }} of {{ pageCount() }}</span>
+        <button type="button" class="btn ghost" [disabled]="page() === pageCount()" (click)="go(page() + 1)">Next</button>
+      </div>
+    }
+  </section>
+</section>

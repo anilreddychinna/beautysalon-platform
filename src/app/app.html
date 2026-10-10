@@ -1,0 +1,98 @@
+@if (session.user(); as person) {
+  <div class="shell" [class.menu-open]="menuOpen()">
+    <header class="mobile-bar">
+      <button type="button" class="menu-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <img class="brand-logo" [src]="shop.profile().logo" alt="" />
+      <strong>{{ shop.profile().name }}</strong>
+    </header>
+    <div class="menu-backdrop" (click)="closeMenu()"></div>
+    <aside class="side">
+      <div class="brand">
+        <img class="brand-logo" [src]="shop.profile().logo" [alt]="shop.profile().name" />
+        <span>
+          <strong>{{ shop.profile().name }}</strong>
+          <small>Point of sale <span class="net-dot" [class.offline]="!online()" role="status" [attr.aria-label]="online() ? 'Online' : 'Offline'" [title]="online() ? 'Online' : 'Offline'"></span></small>
+        </span>
+        <button type="button" class="menu-close" (click)="closeMenu()" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <nav>
+        <a routerLink="/counter" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18l-2-1.4-2 1.4-2-1.4L9 21l-2-1.4L7 21V3z"/><path d="M10 8h4M10 12h4"/></svg>
+          Counter
+        </a>
+        <a routerLink="/today" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+          Today
+        </a>
+        <a routerLink="/customers" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5.5 19.5c1.2-3 3.4-4.5 6.5-4.5s5.3 1.5 6.5 4.5"/></svg>
+          Customers
+        </a>
+        <a routerLink="/reports" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V10M10 19V5M16 19v-7M21 19H3"/></svg>
+          Reports
+        </a>
+        @if (person.role === 'Admin') {
+          <a routerLink="/services" routerLinkActive="active" (click)="closeMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="7" r="2.2"/><circle cx="6.5" cy="17" r="2.2"/><path d="M8.4 8.4 19 17M8.4 15.6 19 7"/></svg>
+            Services & staff
+          </a>
+          <a routerLink="/users" routerLinkActive="active" (click)="closeMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.4"/><circle cx="16" cy="9" r="2"/><path d="M3.8 18.5c.8-2.4 2.4-3.6 4.2-3.6s3.4 1.2 4.2 3.6M13 18.5c.5-1.6 1.6-2.6 3-2.6 1.5 0 2.6 1 3.2 2.6"/></svg>
+            Users
+          </a>
+          <a routerLink="/settings" routerLinkActive="active" (click)="closeMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+            Settings
+          </a>
+        }
+      </nav>
+      <div class="profile">
+        <p><span>Name</span> {{ person.name }}</p>
+        <p><span>Role</span> {{ person.role }}</p>
+        <button type="button" class="profile-logout" (click)="logout()">Logout</button>
+        <p class="side-credit">
+          <span>© {{ year }}</span>
+          <span>Designed by Anil</span>
+          <span>Version {{ version }}</span>
+        </p>
+      </div>
+    </aside>
+    <main class="main">
+      <router-outlet />
+    </main>
+  </div>
+} @else {
+  <router-outlet />
+}
+
+@if (pwa.offerInstall()) {
+  <div class="install-backdrop no-print">
+    <div class="install-pop" role="dialog" aria-modal="true" aria-labelledby="install-title">
+      <img [src]="shop.profile().logo" alt="" />
+      <div>
+        <h2 id="install-title">Install {{ shop.profile().name }}</h2>
+        @if (pwa.iosSteps()) {
+          <p>Tap Share, then choose Add to Home Screen.</p>
+        } @else {
+          <p>Install the point of sale so it opens like an app.</p>
+        }
+      </div>
+      <div class="install-actions">
+        @if (!pwa.iosSteps()) {
+          <button type="button" class="btn primary" (click)="pwa.install()">Install</button>
+        }
+        <button type="button" class="btn ghost" (click)="pwa.dismiss()">Not now</button>
+      </div>
+    </div>
+  </div>
+}
+@if (pwa.pull() > 12 || pwa.message()) {
+  <div class="pull-indicator no-print" role="status">
+    {{ pwa.message() || (pwa.pull() >= 80 ? 'Release to update' : 'Pull down to update') }}
+  </div>
+}

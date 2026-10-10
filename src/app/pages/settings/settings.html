@@ -1,0 +1,52 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <h1>Settings</h1>
+      <p>Salon name, address, and logo used on the screen and the printed bill.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+  @if (notice()) {
+    <div class="banner ok" role="status">{{ notice() }}</div>
+  }
+
+  <section class="panel settings-card">
+    <h2>Shop profile</h2>
+    <form class="stack-form" (submit)="$event.preventDefault(); save()">
+      <div class="settings-logo-row">
+        <img class="settings-logo" [src]="logo()" alt="" />
+        <div class="stack">
+          <label class="field">
+            <span>Logo</span>
+            <input type="file" accept="image/*" (change)="onLogo($event)" />
+          </label>
+          <button type="button" class="btn ghost" (click)="resetLogo()">Use default logo</button>
+        </div>
+      </div>
+      <label class="field">
+        <span>Salon name</span>
+        <input [value]="name()" (input)="onText(name, $event)" maxlength="40" />
+      </label>
+      <label class="field">
+        <span>Address</span>
+        <input [value]="address()" (input)="onText(address, $event)" maxlength="80" />
+      </label>
+      <div class="pair">
+        <label class="field">
+          <span>Phone</span>
+          <input [value]="phone()" (input)="onText(phone, $event)" inputmode="tel" maxlength="20" />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" [value]="email()" (input)="onText(email, $event)" maxlength="80" />
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Save profile</button>
+      </div>
+    </form>
+  </section>
+</section>

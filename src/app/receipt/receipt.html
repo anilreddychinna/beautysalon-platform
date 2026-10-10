@@ -1,0 +1,43 @@
+<article class="receipt">
+  <header class="receipt-head">
+    <p class="receipt-shop">{{ shop.profile().name }}</p>
+    <p class="receipt-meta">{{ shop.profile().address }}</p>
+    <p class="receipt-meta">{{ shop.profile().email }}</p>
+    <p class="receipt-meta">Phone No: {{ shop.profile().phone }}</p>
+  </header>
+
+  <section class="receipt-customer">
+    <p><span>Bill No</span> {{ bill().billNumber }}</p>
+    @if (bill().cancelledAt) {
+      <p class="receipt-cancelled">Cancelled</p>
+    }
+    <p class="receipt-when">{{ when() }}</p>
+    <p><span>Name</span> {{ bill().customerName }}</p>
+    <p><span>Mobile no</span> {{ maskedPhone() }}</p>
+  </section>
+
+  <ul class="receipt-lines">
+    @for (line of bill().lines; track $index) {
+      <li>
+        <div>
+          <strong>{{ line.serviceName }}</strong>
+          <span>{{ line.staffName }} · {{ category(line.category) }} · {{ line.quantity }} × {{ line.price | inr }}</span>
+        </div>
+        <b>{{ line.lineTotal | inr }}</b>
+      </li>
+    }
+  </ul>
+
+  <dl class="receipt-totals">
+    <div><dt>Subtotal</dt><dd>{{ bill().subtotal | inr }}</dd></div>
+    <div><dt>Discount</dt><dd>{{ bill().discount | inr }}</dd></div>
+    @if (bill().taxAmount > 0) {
+      <div><dt>Tax {{ bill().taxPercent }}%</dt><dd>{{ bill().taxAmount | inr }}</dd></div>
+    }
+    <div class="receipt-grand"><dt>Total</dt><dd>{{ bill().total | inr }}</dd></div>
+  </dl>
+
+  <p class="receipt-paid">Paid by {{ payment() }}</p>
+  <p class="receipt-thanks">Thank You Visit Again</p>
+  <button type="button" class="btn primary receipt-print no-print" (click)="print()">Print receipt</button>
+</article>

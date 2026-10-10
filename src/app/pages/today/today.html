@@ -1,0 +1,171 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <h1>Today</h1>
+      <p>Bills saved on {{ selected() }}.</p>
+    </div>
+    <label class="field date-field">
+      <span>Date</span>
+      <input type="date" [value]="selected()" [max]="today" (change)="onDate($event)" />
+    </label>
+  </header>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+
+  <div class="stat-row">
+    <article class="stat tone-collected">
+      <span>Collected</span>
+      <strong>{{ stats().total | inr }}</strong>
+    </article>
+    <article class="stat tone-cash">
+      <span>Cash</span>
+      <strong>{{ stats().cash | inr }}</strong>
+    </article>
+    <article class="stat tone-upi">
+      <span>UPI</span>
+      <strong>{{ stats().upi | inr }}</strong>
+    </article>
+    <article class="stat tone-bills">
+      <span>Bills</span>
+      <strong>{{ stats().count }}</strong>
+    </article>
+  </div>
+
+  <section class="panel day-close">
+    <div class="day-close-row">
+      <div>
+        <h2>Day close</h2>
+        @if (closing(); as saved) {
+          <p class="hint">Saved {{ when(saved.closedAt) }} · Cash counted {{ saved.cashCounted | inr }}</p>
+        }
+      </div>
+      <button type="button" class="btn primary save-day" (click)="askClose()">
+        {{ closing() ? 'Update day close' : 'Save day close' }}
+      </button>
+    </div>
+  </section>
+
+  <section class="panel">
+    @if (loading()) {
+      <p class="empty">Loading bills…</p>
+    } @else if (bills().length === 0) {
+      <p class="empty">No bills on {{ selected() }}. Bills you save at the counter show up here.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Bill</th>
+              <th>Customer</th>
+              <th>Payment</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (bill of bills(); track bill.id) {
+              <tr [class.cancelled]="bill.cancelledAt">
+                <td>{{ when(bill.createdAt) }}</td>
+                <td>{{ bill.billNumber }}</td>
+                <td>
+                  <strong>{{ bill.customerName }}</strong>
+                  <span class="sub">{{ bill.customerPhone }}</span>
+                </td>
+                <td>
+                  @if (bill.cancelledAt) {
+                    <span class="pill cancelled">Cancelled</span>
+                  } @else {
+                    <span class="pill" [class]="'pill ' + bill.paymentMethod">{{ pay(bill.paymentMethod) }}</span>
+                  }
+                </td>
+                <td>{{ bill.total | inr }}</td>
+                <td class="row-actions">
+                  <button type="button" class="btn ghost" (click)="open(bill)">Open</button>
+                  @if (!bill.cancelledAt) {
+                    <button type="button" class="btn ghost" (click)="askCancel(bill)">Cancel</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  @if (confirmClose()) {
+    <div class="overlay" (click)="dismissClose()">
+      <div class="panel overlay-card" [class.success-card]="closeDone()" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        @if (closeDone()) {
+          <div class="success-mark" aria-hidden="true">
+            <svg viewBox="0 0 72 72">
+              <circle class="success-ring" cx="36" cy="36" r="32" />
+              <path class="success-check" d="M20 38 l10 10 22-24" />
+            </svg>
+          </div>
+          <h2>Day closed</h2>
+        } @else {
+          <div class="day-close-dialog">
+          <h2>Day close</h2>
+          <p class="hint">Cash sales {{ stats().cash | inr }} · UPI {{ stats().upi | inr }} · {{ stats().count }} bills. Cancelled bills are left out.</p>
+          <label class="field">
+            <span>Cash counted (₹)</span>
+            <input type="number" min="0" step="0.01" [value]="cashCounted()" (input)="onCash($event)" />
+          </label>
+          <label class="field">
+            <span>Note</span>
+            <input [value]="closeNote()" (input)="onNote($event)" maxlength="80" placeholder="Optional" />
+          </label>
+          @if (counted() != null) {
+            <p class="day-gap" [class.short]="gapKind() === 'short'" [class.over]="gapKind() === 'over'">
+              @if (gapKind() === 'match') {
+                Cash matches the sales.
+              } @else if (gapKind() === 'over') {
+                Drawer is over by {{ gapAmount() | inr }}.
+              } @else {
+                Drawer is short by {{ gapAmount() | inr }}.
+              }
+            </p>
+          }
+          @if (closeError()) {
+            <p class="gender-error">{{ closeError() }}</p>
+          }
+          <div class="form-actions">
+            <button type="button" class="btn primary" [disabled]="savingClose()" (click)="saveClose()">
+              {{ savingClose() ? 'Saving…' : 'Okay' }}
+            </button>
+            <button type="button" class="btn ghost" [disabled]="savingClose()" (click)="dismissClose()">Cancel</button>
+          </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (pendingCancel(); as bill) {
+    <div class="overlay" (click)="dismissCancel()">
+      <div class="panel overlay-card" (click)="$event.stopPropagation()">
+        <h2>Cancel bill {{ bill.billNumber }}?</h2>
+        <p class="hint">It stays in the list, drops out of totals and reports, and the bill number can be used again.</p>
+        <div class="form-actions">
+          <button type="button" class="btn primary" [disabled]="cancelling()" (click)="confirmCancel()">
+            {{ cancelling() ? 'Cancelling…' : 'Cancel bill' }}
+          </button>
+          <button type="button" class="btn ghost" [disabled]="cancelling()" (click)="dismissCancel()">Keep bill</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (openBill(); as bill) {
+    <div class="overlay" (click)="close()">
+      <div class="overlay-card" (click)="$event.stopPropagation()">
+        <app-receipt [bill]="bill" />
+        <button type="button" class="btn ghost wide-btn no-print" (click)="close()">Close</button>
+      </div>
+    </div>
+  }
+</section>
