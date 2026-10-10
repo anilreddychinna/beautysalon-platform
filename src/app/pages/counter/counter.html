@@ -1,0 +1,257 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <h1>Counter</h1>
+      <p>Pick a customer, add services, then take payment.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+
+  <div class="counter-layout">
+    <div class="stack">
+      <div class="customer-row">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Customer</h2>
+        </div>
+
+        @if (customer(); as person) {
+          <div class="picked">
+            <div>
+              <div class="picked-name">
+                <strong>{{ person.name }}</strong>
+                @if (person.gender === 'Female') {
+                  <span class="gender-tag female">Female</span>
+                } @else if (person.gender === 'Male') {
+                  <span class="gender-tag male">Male</span>
+                }
+              </div>
+              <span>{{ person.phone }}</span>
+            </div>
+            <button type="button" class="btn ghost" (click)="clearCustomer()">Change</button>
+          </div>
+        } @else {
+          <label class="field">
+            <span>Mobile no</span>
+            <input
+              [value]="query()"
+              (input)="onMobile($event)"
+              placeholder="Indian mobile number"
+              inputmode="numeric"
+              maxlength="16"
+            />
+          </label>
+          @if (mobileHint()) {
+            <p class="hint">{{ mobileHint() }}</p>
+          }
+          @if (matches().length > 1) {
+            <label class="field">
+              <span>Select customer</span>
+              <select (change)="pickMatch($event)">
+                <option value="">Select</option>
+                @for (person of matches(); track person.id) {
+                  <option [value]="person.id">{{ person.name }} · {{ person.phone }}</option>
+                }
+              </select>
+            </label>
+          }
+          @if (query().length === 10 && !mobileHint() && matches().length === 0) {
+            <div class="name-gender">
+              <label class="field">
+                <span>Name</span>
+                <input [value]="newName()" (input)="onName($event)" maxlength="20" />
+              </label>
+              <div class="gender-picks" role="group" aria-label="Gender">
+                <button type="button" class="gender-icon female" [class.on]="newGender() === 'Female'" (click)="setNewGender('Female')">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M7.2 21.5 12 9.2l4.8 12.3z"/></svg>
+                  Female
+                </button>
+                <button type="button" class="gender-icon male" [class.on]="newGender() === 'Male'" (click)="setNewGender('Male')">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M8 9.2h8v4.2h-1.7V21h-2V15.8h-.6V21H9.7v-7.6H8z"/></svg>
+                  Male
+                </button>
+              </div>
+            </div>
+            @if (newGender() !== 'Female' && newGender() !== 'Male') {
+              <p class="gender-error">Please select gender.</p>
+            }
+            <button type="button" class="btn primary customer-add" [disabled]="newGender() !== 'Female' && newGender() !== 'Male'" (click)="addCustomer()">Add customer</button>
+          }
+        }
+      </section>
+
+      <section class="panel bill-no-panel">
+        <label class="field bill-field">
+          <span>Bill No</span>
+          <input class="bill-no" [value]="billNo()" (input)="onBillNo($event)" placeholder="00000" inputmode="numeric" maxlength="5" />
+        </label>
+        <div class="bill-clock">
+          <div>
+            <span>Date</span>
+            <strong>{{ todayLabel() }}</strong>
+          </div>
+          <div>
+            <span>Time</span>
+            <strong>{{ timeLabel() }}</strong>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Services</h2>
+          <div class="chips" role="tablist">
+            <button type="button" [class.on]="category() === 'all'" (click)="setCategory('all')">All</button>
+            <button type="button" [class.on]="category() === 'hair'" (click)="setCategory('hair')">Hair</button>
+            <button type="button" [class.on]="category() === 'skin'" (click)="setCategory('skin')">Skin</button>
+            <button type="button" [class.on]="category() === 'nails'" (click)="setCategory('nails')">Nails</button>
+            <button type="button" [class.on]="category() === 'special'" (click)="setCategory('special')">Special</button>
+          </div>
+        </div>
+        @if (loading()) {
+          <p class="empty">Loading services…</p>
+        } @else if (activeServices().length === 0) {
+          <p class="empty">No active services. Turn a service on under Services & staff.</p>
+        } @else if (visibleServices().length === 0) {
+          <p class="empty">No active services in this category.</p>
+        } @else {
+          <div class="service-grid">
+            @for (service of visibleServices(); track service.id) {
+              <button
+                type="button"
+                class="service-card"
+                [class.selected]="isSelected(service.id)"
+                [attr.data-tone]="service.color"
+                (click)="toggleService(service)"
+              >
+                <span class="card-top">
+                  <strong>{{ service.name }}</strong>
+                  <span class="tick" [class.on]="isSelected(service.id)"></span>
+                </span>
+                <span class="meta">{{ categoryName(service.category) }} · {{ service.minutes }} min</span>
+                <b>{{ service.price | inr }}</b>
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="panel">
+        <h2>This bill</h2>
+        @if (lines().length === 0) {
+          <p class="empty">No services on this bill yet. Choose a service to add a line.</p>
+        } @else {
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Stylist</th>
+                  <th>Qty</th>
+                  <th>Amount</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of lines(); track line.key) {
+                  <tr>
+                    <td>
+                      <strong>{{ line.serviceName }}</strong>
+                      <span class="sub">{{ categoryName(line.category) }} · {{ line.price | inr }}</span>
+                    </td>
+                    <td>
+                      <select [value]="line.staffId" (change)="setStaff(line.key, $event)">
+                        <option value="">Choose stylist</option>
+                        @for (member of activeStaff(); track member.id) {
+                          <option [value]="member.id">{{ member.name }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <input class="qty" type="number" min="1" step="1" [value]="line.quantity" (change)="setQuantity(line.key, $event)" />
+                    </td>
+                    <td>{{ lineTotal(line) | inr }}</td>
+                    <td><button type="button" class="btn ghost" (click)="removeLine(line.key)">Remove</button></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (activeStaff().length === 0) {
+            <p class="empty tight">No active stylists. Add one under Services & staff.</p>
+          }
+        }
+      </section>
+    </div>
+
+    <aside class="panel settle">
+        <h2>Settle</h2>
+        <dl class="totals">
+          <div><dt>Subtotal</dt><dd>{{ quote().subtotal | inr }}</dd></div>
+          <div><dt>Discount</dt><dd>{{ quote().discount | inr }}</dd></div>
+          <div class="grand"><dt>Total</dt><dd>{{ quote().total | inr }}</dd></div>
+        </dl>
+        <label class="field">
+          <span>Discount (₹)</span>
+          <input type="number" min="0" step="0.01" [value]="discountText()" (input)="onText(discountText, $event)" />
+        </label>
+        <p class="pay-label">Payment</p>
+        <div class="pay-row">
+          <button type="button" class="pay cash" [class.on]="payment() === 'cash'" (click)="choosePayment('cash')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.4"/><path d="M6.5 9h.01M17.5 15h.01"/></svg>
+            Cash
+          </button>
+          <button type="button" class="pay upi" [class.on]="payment() === 'upi'" (click)="choosePayment('upi')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2.5v2.5H14zM17.5 14H20v2.5h-2.5zM14 17.5h2.5V20H14zM17.5 17.5H20V20h-2.5z"/></svg>
+            UPI
+          </button>
+        </div>
+        @if (problem() && (lines().length || customer() || payment() || billNo())) {
+          <p class="hint">{{ problem() }}</p>
+        }
+        <button type="button" class="btn primary wide-btn save-bill" [disabled]="saving() || !!problem()" (click)="save()">
+          {{ saving() ? 'Saving…' : 'Save bill' }}
+        </button>
+        <section class="last-bill">
+          <h2>Last Bill Details</h2>
+          @if (lastBill(); as previous) {
+            <dl class="totals">
+              <div><dt>Bill No</dt><dd>{{ previous.billNumber }}</dd></div>
+              <div><dt>Amount</dt><dd>{{ previous.total | inr }}</dd></div>
+            </dl>
+          } @else {
+            <p class="hint">No bill saved yet.</p>
+          }
+        </section>
+    </aside>
+  </div>
+
+  @if (saved(); as bill) {
+    <div class="overlay success-dialog" role="dialog" aria-modal="true" aria-labelledby="saved-title">
+      <div class="panel overlay-card success-card">
+        <div class="success-mark" aria-hidden="true">
+          <svg viewBox="0 0 72 72">
+            <circle class="success-ring" cx="36" cy="36" r="32" />
+            <path class="success-check" d="M20 38 l10 10 22-24" />
+          </svg>
+        </div>
+        <h2 id="saved-title">Bill saved</h2>
+        <dl class="success-details">
+          <div><dt>Bill no</dt><dd>{{ bill.billNumber }}</dd></div>
+          <div><dt>Amount</dt><dd>{{ bill.total | inr }}</dd></div>
+        </dl>
+        <div class="success-actions no-print">
+          <button type="button" class="btn ghost" (click)="newBill()">Ok</button>
+          <button type="button" class="btn primary" (click)="printReceipt()">Print</button>
+        </div>
+        <div class="print-only" aria-hidden="true">
+          <app-receipt [bill]="bill" />
+        </div>
+      </div>
+    </div>
+  }
+</section>

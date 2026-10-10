@@ -1,0 +1,171 @@
+<section class="page reports-page">
+  <header class="page-head">
+    <div>
+      <h1>Reports</h1>
+      <p>Totals for a date range, and an Excel file of the bills.</p>
+    </div>
+  </header>
+
+  <section class="panel filters">
+    <label class="field">
+      <span>From</span>
+      <input type="date" [value]="from()" (input)="onFrom($event)" />
+    </label>
+    <label class="field">
+      <span>To</span>
+      <input type="date" [value]="to()" (input)="onTo($event)" />
+    </label>
+    <button type="button" class="btn primary" (click)="load()">Show report</button>
+    <button type="button" class="btn ghost" [disabled]="downloading()" (click)="download()">
+      {{ downloading() ? 'Preparing…' : 'Download Excel' }}
+    </button>
+  </section>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+  @if (excelError()) {
+    <div class="banner bad" role="alert">{{ excelError() }}</div>
+  }
+
+  @if (report(); as report) {
+    @if (report.bills.length === 0) {
+      <p class="empty panel">No bills in this date range.</p>
+    } @else {
+      <div class="chart-row">
+        <section class="chart-card">
+          <h2>Sales by day</h2>
+          <div class="vbars">
+            @for (day of report.byDay; track day.date) {
+              <div class="vbar" [title]="formatDate(day.date) + ' · ' + (day.total | inr)">
+                <span class="vbar-fill" [style.height.%]="share(day.total, dayMax(report))"></span>
+                @if (report.byDay.length <= 14) {
+                  <small>{{ dayLabel(day.date) }}</small>
+                }
+              </div>
+            }
+          </div>
+        </section>
+        <section class="chart-card">
+          <h2>Payments</h2>
+          <div class="hbars">
+            @for (item of paymentBars(report); track item.label) {
+              <div class="hbar">
+                <span>{{ item.label }}</span>
+                <span class="hbar-track"><span [class]="item.kind" [style.width.%]="share(item.amount, payMax(report))"></span></span>
+              </div>
+            }
+          </div>
+        </section>
+        <section class="chart-card">
+          <h2>Top services</h2>
+          @if (topServices(report).length === 0) {
+            <p class="hint">No services in this range.</p>
+          } @else {
+            <div class="hbars">
+              @for (row of topServices(report); track row.serviceId) {
+                <div class="hbar" [title]="row.name + ' · ' + (row.amount | inr)">
+                  <span>{{ row.name }}</span>
+                  <span class="hbar-track"><span class="service" [style.width.%]="share(row.amount, serviceMax(report))"></span></span>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      </div>
+      <div class="reports-body">
+      <section class="panel reports-panel">
+        <h2>By day</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Bills</th>
+                <th>Cash</th>
+                <th>Card</th>
+                <th>UPI</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (day of report.byDay; track day.date) {
+                <tr>
+                  <td>{{ formatDate(day.date) }}</td>
+                  <td>{{ day.bills }}</td>
+                  <td>{{ day.cash | inr }}</td>
+                  <td>{{ day.card | inr }}</td>
+                  <td>{{ day.upi | inr }}</td>
+                  <td>{{ day.total | inr }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="split reports-split">
+        <section class="panel reports-panel">
+          <h2>By service</h2>
+          @if (report.byService.length === 0) {
+            <p class="empty">No service lines in this date range.</p>
+          } @else {
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Service</th>
+                    <th>Category</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of report.byService; track row.serviceId) {
+                    <tr>
+                      <td>{{ row.name }}</td>
+                      <td>{{ category(row.category) }}</td>
+                      <td>{{ row.quantity }}</td>
+                      <td>{{ row.amount | inr }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+
+        <section class="panel reports-panel">
+          <h2>By staff</h2>
+          @if (report.byStaff.length === 0) {
+            <p class="empty">No staff lines in this date range.</p>
+          } @else {
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Staff</th>
+                    <th>Services</th>
+                    <th>Sales</th>
+                    <th>Commission</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of report.byStaff; track row.staffId) {
+                    <tr>
+                      <td>{{ row.name }}</td>
+                      <td>{{ row.services }}</td>
+                      <td>{{ row.sales | inr }}</td>
+                      <td>{{ row.commission | inr }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      </div>
+      </div>
+    }
+  }
+</section>

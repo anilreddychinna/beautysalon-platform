@@ -1,0 +1,24 @@
+<section class="login-screen">
+  <form class="panel login-card" (submit)="$event.preventDefault(); submit()">
+    <img class="login-logo" [src]="shop.profile().logo" [alt]="shop.profile().name" />
+    <h1>{{ shop.profile().name }}</h1>
+    <p class="login-kicker">Point Of Sale <span class="net-dot" [class.offline]="!online()" role="status" [attr.aria-label]="online() ? 'Online' : 'Offline'" [title]="online() ? 'Online' : 'Offline'"></span></p>
+
+    @if (error()) {
+      <div class="banner bad" role="alert">{{ error() }}</div>
+    }
+
+    <label class="field">
+      <span>Username</span>
+      <input [value]="username()" (input)="onText(username, $event)" autocomplete="username" />
+    </label>
+    <label class="field">
+      <span>Password</span>
+      <input type="password" [value]="password()" (input)="onText(password, $event)" autocomplete="current-password" />
+    </label>
+    <button type="submit" class="btn primary wide-btn" [disabled]="busy()">
+      {{ busy() ? 'Signing in…' : 'Log in' }}
+    </button>
+    <p class="login-sample">Sample: admin / admin123, or manager / manager123</p>
+  </form>
+</section>

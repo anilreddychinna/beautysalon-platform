@@ -1,0 +1,142 @@
+<section class="page catalog-page">
+  <header class="page-head">
+    <div>
+      <h1>Services and staff</h1>
+      <p>The counter lists active services and stylists only. {{ activeServiceCount() }} services and {{ activeStaffCount() }} stylists are active.</p>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+  @if (notice()) {
+    <div class="banner ok" role="status">{{ notice() }}</div>
+  }
+
+  <div class="split even">
+    <section class="panel catalog-panel">
+      <h2>{{ serviceId() ? 'Edit service' : 'Add service' }}</h2>
+      <form class="stack-form" (submit)="$event.preventDefault(); saveService()">
+        <label class="field">
+          <span>Service name</span>
+          <input [value]="serviceName()" (input)="onText(serviceName, $event)" />
+        </label>
+        <label class="field">
+          <span>Category</span>
+          <select [value]="category()" (change)="onCategory($event)">
+            <option value="hair">Hair</option>
+            <option value="skin">Skin</option>
+            <option value="nails">Nails</option>
+            <option value="special">Special</option>
+          </select>
+        </label>
+        <div class="pair">
+          <label class="field">
+            <span>Price (₹)</span>
+            <input type="number" min="0" step="0.01" [value]="price()" (input)="onText(price, $event)" />
+          </label>
+          <label class="field">
+            <span>Minutes</span>
+            <input type="number" min="1" step="1" [value]="minutes()" (input)="onText(minutes, $event)" />
+          </label>
+        </div>
+        <label class="check">
+          <input type="checkbox" [checked]="serviceActive()" (change)="onServiceActive($event)" />
+          Active on the counter
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn primary" [disabled]="savingService()">{{ savingService() ? 'Saving…' : 'Save service' }}</button>
+          @if (serviceId()) {
+            <button type="button" class="btn ghost" (click)="resetService()">Cancel</button>
+          }
+        </div>
+      </form>
+
+      @if (loading()) {
+        <p class="empty">Loading services…</p>
+      } @else if (services().length === 0) {
+        <p class="empty">No services yet. Add a service so the counter can sell it.</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Minutes</th>
+                <th>Counter</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (service of services(); track service.id) {
+                <tr>
+                  <td><strong>{{ service.name }}</strong></td>
+                  <td>{{ label(service.category) }}</td>
+                  <td>{{ service.price | inr }}</td>
+                  <td>{{ service.minutes }}</td>
+                  <td>{{ service.active ? 'Active' : 'Hidden' }}</td>
+                  <td><button type="button" class="btn ghost" (click)="editService(service)">Edit</button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section class="panel catalog-panel">
+      <h2>{{ staffId() ? 'Edit staff' : 'Add staff' }}</h2>
+      <form class="stack-form" (submit)="$event.preventDefault(); saveStaff()">
+        <label class="field">
+          <span>Staff name</span>
+          <input [value]="staffName()" (input)="onText(staffName, $event)" />
+        </label>
+        <label class="field">
+          <span>Commission % (optional)</span>
+          <input type="number" min="0" max="100" step="0.01" [value]="commission()" (input)="onText(commission, $event)" placeholder="Leave blank for none" />
+        </label>
+        <label class="check">
+          <input type="checkbox" [checked]="staffActive()" (change)="onStaffActive($event)" />
+          Active on the counter
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="btn primary" [disabled]="savingStaff()">{{ savingStaff() ? 'Saving…' : 'Save staff' }}</button>
+          @if (staffId()) {
+            <button type="button" class="btn ghost" (click)="resetStaff()">Cancel</button>
+          }
+        </div>
+      </form>
+
+      @if (loading() && staff().length === 0) {
+        <p class="empty">Loading staff…</p>
+      } @else if (staff().length === 0) {
+        <p class="empty">No staff yet. Add a stylist so bills can record who did the work.</p>
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Commission</th>
+                <th>Counter</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (member of staff(); track member.id) {
+                <tr>
+                  <td><strong>{{ member.name }}</strong></td>
+                  <td>{{ member.commissionPercent == null ? '—' : member.commissionPercent + '%' }}</td>
+                  <td>{{ member.active ? 'Active' : 'Hidden' }}</td>
+                  <td><button type="button" class="btn ghost" (click)="editStaff(member)">Edit</button></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+</section>

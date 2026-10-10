@@ -1,0 +1,97 @@
+<section class="page mifos-client">
+  <nav class="mifos-crumb" aria-label="Breadcrumb">
+    <a routerLink="/customers">Customers</a>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    @if (customer(); as person) {
+      <span>{{ person.name }}</span>
+    } @else {
+      <span>View customer</span>
+    }
+  </nav>
+
+  @if (error()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="empty">Loading customer…</p>
+  } @else if (customer()) {
+    @if (customer(); as person) {
+      <article class="mifos-profile">
+        <div class="mifos-profile-top">
+          <div class="mifos-avatar" [attr.data-gender]="person.gender" aria-hidden="true">
+            @if (person.gender === 'Female') {
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6"/><path d="M7.2 21.5 12 9.2l4.8 12.3z"/></svg>
+            } @else {
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6"/><path d="M8 9.2h8v4.2h-1.7V21h-2V15.8h-.6V21H9.7v-7.6H8z"/></svg>
+            }
+          </div>
+          <div class="mifos-identity">
+            <h1>{{ person.name }} <span class="mifos-status">Active</span></h1>
+          </div>
+          <a class="btn primary" [routerLink]="['/counter']" [queryParams]="{ customer: person.id }">New order</a>
+        </div>
+        <dl class="mifos-header-details">
+          <div><dt>Account No.</dt><dd>{{ person.customerId || person.id }}</dd></div>
+          <div><dt>Mobile</dt><dd>{{ person.phone }}</dd></div>
+          <div><dt>Gender</dt><dd>{{ person.gender || '—' }}</dd></div>
+          <div><dt>Notes</dt><dd>{{ person.notes || '—' }}</dd></div>
+          <div><dt>Customer since</dt><dd>{{ when(person.createdAt) }}</dd></div>
+        </dl>
+      </article>
+
+      <nav class="mifos-tabs" role="tablist">
+        <button type="button" [class.on]="tab() === 'general'" (click)="showTab('general')">General</button>
+        <button type="button" [class.on]="tab() === 'orders'" (click)="showTab('orders')">Orders</button>
+      </nav>
+
+      @if (tab() === 'general') {
+        <section class="panel mifos-summary">
+          <h2>Summary</h2>
+          <table class="mifos-fields">
+            <tbody>
+              <tr><th>Visits</th><td>{{ visits() }}</td></tr>
+              <tr><th>Orders</th><td>{{ orders().length }}</td></tr>
+              <tr><th>Amount spent</th><td>{{ spent() | inr }}</td></tr>
+            </tbody>
+          </table>
+        </section>
+      } @else if (orders().length === 0) {
+        <p class="empty">No orders yet. Use New order when this customer comes for a service.</p>
+      } @else {
+        <section class="panel">
+          <div class="table-wrap customer-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Bill</th>
+                  <th>Services</th>
+                  <th>Payment</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (bill of orders(); track bill.id) {
+                  <tr [class.cancelled]="bill.cancelledAt">
+                    <td>{{ when(bill.createdAt) }}</td>
+                    <td>{{ bill.billNumber }}</td>
+                    <td>{{ serviceNames(bill) }}</td>
+                    <td>
+                      @if (bill.cancelledAt) {
+                        <span class="pill cancelled">Cancelled</span>
+                      } @else {
+                        {{ pay(bill.paymentMethod) }}
+                      }
+                    </td>
+                    <td>{{ bill.total | inr }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+    }
+  }
+</section>
