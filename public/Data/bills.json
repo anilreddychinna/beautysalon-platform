@@ -1,0 +1,258 @@
+[
+  {
+    "id": "b-0920-ananya",
+    "billNumber": "S-20260920-001",
+    "createdAt": "2026-09-20T08:15:00.000Z",
+    "businessDate": "2026-09-20",
+    "customerId": "c-ananya",
+    "customerName": "Ananya Rao",
+    "customerPhone": "9900123456",
+    "lines": [
+      {
+        "serviceId": "s-pedi",
+        "serviceName": "Pedicure",
+        "category": "nails",
+        "price": 650,
+        "minutes": 45,
+        "staffId": "st-anita",
+        "staffName": "Anita",
+        "commissionPercent": 12,
+        "quantity": 1,
+        "lineTotal": 650
+      }
+    ],
+    "subtotal": 650,
+    "discount": 0,
+    "taxPercent": 5,
+    "taxAmount": 32.5,
+    "total": 682.5,
+    "paymentMethod": "cash"
+  },
+  {
+    "id": "b-0922-meera",
+    "billNumber": "S-20260922-001",
+    "createdAt": "2026-09-22T09:40:00.000Z",
+    "businessDate": "2026-09-22",
+    "customerId": "c-meera",
+    "customerName": "Meera Iyer",
+    "customerPhone": "9845011122",
+    "lines": [
+      {
+        "serviceId": "s-colour",
+        "serviceName": "Hair colour",
+        "category": "hair",
+        "price": 1800,
+        "minutes": 90,
+        "staffId": "st-ravi",
+        "staffName": "Ravi",
+        "commissionPercent": 10,
+        "quantity": 1,
+        "lineTotal": 1800
+      }
+    ],
+    "subtotal": 1800,
+    "discount": 200,
+    "taxPercent": 5,
+    "taxAmount": 80,
+    "total": 1680,
+    "paymentMethod": "card"
+  },
+  {
+    "id": "b-0924-farah",
+    "billNumber": "S-20260924-001",
+    "createdAt": "2026-09-24T05:05:00.000Z",
+    "businessDate": "2026-09-24",
+    "customerId": "c-farah",
+    "customerName": "Farah Khan",
+    "customerPhone": "9966554433",
+    "lines": [
+      {
+        "serviceId": "s-whair",
+        "serviceName": "Women's haircut",
+        "category": "hair",
+        "price": 500,
+        "minutes": 40,
+        "staffId": "st-anita",
+        "staffName": "Anita",
+        "commissionPercent": 12,
+        "quantity": 1,
+        "lineTotal": 500
+      }
+    ],
+    "subtotal": 500,
+    "discount": 0,
+    "taxPercent": 5,
+    "taxAmount": 25,
+    "total": 525,
+    "paymentMethod": "upi"
+  },
+  {
+    "id": "b-0925-sneha",
+    "billNumber": "S-20260925-001",
+    "createdAt": "2026-09-25T11:25:00.000Z",
+    "businessDate": "2026-09-25",
+    "customerId": "c-sneha",
+    "customerName": "Sneha Patil",
+    "customerPhone": "9812345678",
+    "lines": [
+      {
+        "serviceId": "s-clean",
+        "serviceName": "Cleanup",
+        "category": "skin",
+        "price": 700,
+        "minutes": 45,
+        "staffId": "st-lata",
+        "staffName": "Lata",
+        "commissionPercent": 8,
+        "quantity": 1,
+        "lineTotal": 700
+      }
+    ],
+    "subtotal": 700,
+    "discount": 0,
+    "taxPercent": 5,
+    "taxAmount": 35,
+    "total": 735,
+    "paymentMethod": "upi"
+  },
+  {
+    "id": "b-0926-divya",
+    "billNumber": "S-20260926-001",
+    "createdAt": "2026-09-26T07:50:00.000Z",
+    "businessDate": "2026-09-26",
+    "customerId": "c-divya",
+    "customerName": "Divya Menon",
+    "customerPhone": "9740011223",
+    "lines": [
+      {
+        "serviceId": "s-colour",
+        "serviceName": "Hair colour",
+        "category": "hair",
+        "price": 1800,
+        "minutes": 90,
+        "staffId": "st-ravi",
+        "staffName": "Ravi",
+        "commissionPercent": 10,
+        "quantity": 1,
+        "lineTotal": 1800
+      }
+    ],
+    "subtotal": 1800,
+    "discount": 0,
+    "taxPercent": 5,
+    "taxAmount": 90,
+    "total": 1890,
+    "paymentMethod": "cash"
+  },
+  {
+    "id": "b-0927-meera",
+    "billNumber": "S-20260927-001",
+    "createdAt": "2026-09-27T04:35:00.000Z",
+    "businessDate": "2026-09-27",
+    "customerId": "c-meera",
+    "customerName": "Meera Iyer",
+    "customerPhone": "9845011122",
+    "lines": [
+      {
+        "serviceId": "s-whair",
+        "serviceName": "Women's haircut",
+        "category": "hair",
+        "price": 500,
+        "minutes": 40,
+        "staffId": "st-anita",
+        "staffName": "Anita",
+        "commissionPercent": 12,
+        "quantity": 1,
+        "lineTotal": 500
+      },
+      {
+        "serviceId": "s-blow",
+        "serviceName": "Blow dry",
+        "category": "hair",
+        "price": 400,
+        "minutes": 30,
+        "staffId": "st-ravi",
+        "staffName": "Ravi",
+        "commissionPercent": 10,
+        "quantity": 1,
+        "lineTotal": 400
+      }
+    ],
+    "subtotal": 900,
+    "discount": 50,
+    "taxPercent": 5,
+    "taxAmount": 42.5,
+    "total": 892.5,
+    "paymentMethod": "cash"
+  },
+  {
+    "id": "b-0927-ananya",
+    "billNumber": "S-20260927-002",
+    "createdAt": "2026-09-27T06:10:00.000Z",
+    "businessDate": "2026-09-27",
+    "customerId": "c-ananya",
+    "customerName": "Ananya Rao",
+    "customerPhone": "9900123456",
+    "lines": [
+      {
+        "serviceId": "s-facial",
+        "serviceName": "Facial",
+        "category": "skin",
+        "price": 1200,
+        "minutes": 60,
+        "staffId": "st-lata",
+        "staffName": "Lata",
+        "commissionPercent": 8,
+        "quantity": 1,
+        "lineTotal": 1200
+      }
+    ],
+    "subtotal": 1200,
+    "discount": 0,
+    "taxPercent": 5,
+    "taxAmount": 60,
+    "total": 1260,
+    "paymentMethod": "upi"
+  },
+  {
+    "id": "b-0927-kavya",
+    "billNumber": "S-20260927-003",
+    "createdAt": "2026-09-27T09:20:00.000Z",
+    "businessDate": "2026-09-27",
+    "customerId": "c-kavya",
+    "customerName": "Kavya Nair",
+    "customerPhone": "9886012345",
+    "lines": [
+      {
+        "serviceId": "s-mani",
+        "serviceName": "Manicure",
+        "category": "nails",
+        "price": 450,
+        "minutes": 35,
+        "staffId": "st-anita",
+        "staffName": "Anita",
+        "commissionPercent": 12,
+        "quantity": 1,
+        "lineTotal": 450
+      },
+      {
+        "serviceId": "s-pedi",
+        "serviceName": "Pedicure",
+        "category": "nails",
+        "price": 650,
+        "minutes": 45,
+        "staffId": "st-anita",
+        "staffName": "Anita",
+        "commissionPercent": 12,
+        "quantity": 1,
+        "lineTotal": 650
+      }
+    ],
+    "subtotal": 1100,
+    "discount": 100,
+    "taxPercent": 5,
+    "taxAmount": 50,
+    "total": 1050,
+    "paymentMethod": "card"
+  }
+]

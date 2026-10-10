@@ -1,0 +1,50 @@
+[
+  {
+    "id": "c-meera",
+    "customerId": "1",
+    "name": "Meera Iyer",
+    "phone": "9845011122",
+    "notes": "Prefers a quiet chair",
+    "createdAt": "2026-08-02T05:30:00.000Z"
+  },
+  {
+    "id": "c-ananya",
+    "customerId": "2",
+    "name": "Ananya Rao",
+    "phone": "9900123456",
+    "notes": "Allergic to strong fragrance",
+    "createdAt": "2026-08-11T06:10:00.000Z"
+  },
+  {
+    "id": "c-kavya",
+    "customerId": "3",
+    "name": "Kavya Nair",
+    "phone": "9886012345",
+    "notes": "",
+    "createdAt": "2026-09-01T04:00:00.000Z"
+  },
+  {
+    "id": "c-divya",
+    "customerId": "4",
+    "name": "Divya Menon",
+    "phone": "9740011223",
+    "notes": "Usually books with Anita",
+    "createdAt": "2026-09-10T07:20:00.000Z"
+  },
+  {
+    "id": "c-sneha",
+    "customerId": "5",
+    "name": "Sneha Patil",
+    "phone": "9812345678",
+    "notes": "Walk-in regular",
+    "createdAt": "2026-09-18T08:00:00.000Z"
+  },
+  {
+    "id": "c-farah",
+    "customerId": "6",
+    "name": "Farah Khan",
+    "phone": "9966554433",
+    "notes": "",
+    "createdAt": "2026-09-24T03:40:00.000Z"
+  }
+]

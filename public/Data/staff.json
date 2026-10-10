@@ -1,0 +1,26 @@
+[
+  {
+    "id": "st-anita",
+    "name": "Anita",
+    "commissionPercent": 12,
+    "active": true
+  },
+  {
+    "id": "st-ravi",
+    "name": "Ravi",
+    "commissionPercent": 10,
+    "active": true
+  },
+  {
+    "id": "st-lata",
+    "name": "Lata",
+    "commissionPercent": 8,
+    "active": true
+  },
+  {
+    "id": "st-kiran",
+    "name": "Kiran",
+    "commissionPercent": 15,
+    "active": false
+  }
+]

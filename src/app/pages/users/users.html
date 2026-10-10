@@ -1,0 +1,90 @@
+<section class="page users-page">
+  <header class="page-head">
+    <div>
+      <h1>Users</h1>
+      <p>Add an admin or a manager. They sign in with the username and password you set here.</p>
+    </div>
+    <button type="button" class="btn primary" (click)="beginAdd()">Add user</button>
+  </header>
+
+  @if (error() && !formOpen()) {
+    <div class="banner bad" role="alert">{{ error() }}</div>
+  }
+  @if (notice()) {
+    <div class="banner ok" role="status">{{ notice() }}</div>
+  }
+
+  @if (formOpen()) {
+    <div class="overlay" (click)="cancel()">
+      <div class="panel overlay-card customer-dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <h2>Add user</h2>
+        @if (error()) {
+          <div class="banner bad" role="alert">{{ error() }}</div>
+        }
+        <form class="stack-form" (submit)="$event.preventDefault(); save()">
+          <label class="field">
+            <span>Name</span>
+            <input [value]="name()" (input)="onText(name, $event)" maxlength="40" />
+          </label>
+          <label class="field">
+            <span>Username</span>
+            <input [value]="username()" (input)="onText(username, $event)" maxlength="20" autocapitalize="off" autocomplete="off" />
+          </label>
+          <p class="hint">3 to 20 letters or numbers. This is what they type to sign in.</p>
+          <label class="field">
+            <span>Password</span>
+            <input type="password" [value]="password()" (input)="onText(password, $event)" autocomplete="new-password" />
+          </label>
+          <label class="field">
+            <span>Role</span>
+            <select [value]="role()" (change)="onRole($event)">
+              <option value="">Select role</option>
+              <option value="Admin">Admin</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </label>
+          @if (role() !== 'Admin' && role() !== 'Manager') {
+            <p class="gender-error">Please select a role.</p>
+          }
+          <div class="form-actions">
+            <button type="submit" class="btn primary" [disabled]="saving() || (role() !== 'Admin' && role() !== 'Manager')">
+              {{ saving() ? 'Saving…' : 'Save user' }}
+            </button>
+            <button type="button" class="btn ghost" (click)="cancel()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <section class="panel customers-list">
+    @if (loading()) {
+      <p class="empty">Loading users…</p>
+    } @else if (rows().length === 0) {
+      <p class="empty">No users yet.</p>
+    } @else {
+      <div class="table-wrap customer-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.id) {
+              <tr>
+                <td><strong>{{ row.name }}</strong></td>
+                <td>{{ row.username }}</td>
+                <td>
+                  <span class="role-tag" [class.admin]="row.role === 'Admin'" [class.manager]="row.role === 'Manager'">{{ row.role }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>
